@@ -8,11 +8,17 @@ namespace OrderSplitter
     // Defining the shape of the Order (data transfer object)
     class Dto
     {
-        public string orderNumber { get; set; }
-        public string sku { get; set; }
-        public string length { get; set; }
-        public string width { get; set; }
-        public string quantity { get; set; }
-        public string weight { get; set; }
+        /*
+         * Maintaining the same property names as given in the orders.csv file for simplicity reasons.
+        */
+        public int OrderNumber { get; set; }
+        public int SKUs { get; set; }
+        public int Length { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public int Weight { get; set; }
+
+        public Dto() { }
+        
     }
 }
