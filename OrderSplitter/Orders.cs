@@ -25,11 +25,7 @@ namespace OrderSplitter
             this.UniqueOrderList = new List<int>();
         }
 
-        // Future: feature enables adding the user defined orders
-        public void addOrder(Dto nextorder)
-        {
-            OrderList.Add(nextorder);
-        }
+        
     }
 
 
