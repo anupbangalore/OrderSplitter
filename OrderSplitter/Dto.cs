@@ -5,7 +5,10 @@ using System.Text;
 namespace OrderSplitter
 {
 
-    // Defining the shape of the Order (data transfer object)
+    /*
+     * Defining the shape of the Order (data transfer object)
+     * Update this, if the order fields change.
+     */
     class Dto
     {
         /*
@@ -16,6 +19,7 @@ namespace OrderSplitter
         public int Length { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
+        public int Quantity { get; set; }
         public int Weight { get; set; }
 
         public Dto() { }
