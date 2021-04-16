@@ -1,8 +1,6 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
-using Microsoft.VisualBasic.FileIO;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -16,6 +14,9 @@ namespace OrderSplitter
         {
             Orders ords = new Orders();
 
+            /*
+             * 1. Reading orders.csv using CsvHelper library
+             */
             var config = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ";" };
             using (var reader = new StreamReader("D:\\.Net\\OrderSplitter\\OrderSplitter\\orders.csv"))
             using (var csv = new CsvReader(reader, config))
@@ -24,25 +25,44 @@ namespace OrderSplitter
                 ords.OrderList = csv.GetRecords<Dto>().ToList<Dto>();
             }
 
+            // Getting unique list of order numbers
             ords.UniqueOrderList = ords.OrderList.Select(x => x.OrderNumber).Distinct().ToList<int>();
 
-            using (var writer = new StreamWriter("D:\\.Net\\OrderSplitter\\OrderSplitter\\temp.csv"))
-            using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
+            // Ordering the order list in case the order numbers are not sorted
+            ords.OrderList = ords.OrderList.OrderBy(ord => ord.OrderNumber).ToList();
+
+            string filename = null;
+
+            /*
+             * 2 & 3. Using unique order list to make the individual files and 
+             * writing a seperate csv for earch order number
+             */
+
+            foreach (var uo in ords.UniqueOrderList)
             {
-                csvWriter.WriteHeader<Dto>();
-                csvWriter.NextRecord();
-                foreach (var record in ords.OrderList)
+                filename = "D:\\.Net\\OrderSplitter\\OrderSplitter\\" + uo + "_" + 
+                    DateTime.Now.ToString("yyyyMMddTHHmmss")+ ".csv";
+
+                using (var writer = new StreamWriter(filename))
+                using (var csvWriter = new CsvWriter(writer, config))
                 {
-                    if (record.OrderNumber == ords.UniqueOrderList.First())
+                    csvWriter.WriteHeader<Dto>();
+                    csvWriter.NextRecord();
+
+                    foreach(var record in ords.OrderList)
                     {
-                        csvWriter.WriteRecord(record);
-                        csvWriter.NextRecord();
+                        if (record.OrderNumber == uo)
+                        {
+                            csvWriter.WriteRecord(record);
+                            csvWriter.NextRecord();
+
+                        }
                     }
+
                 }
             }
-                Console.WriteLine("\nEnd");
-
-            
+ 
+            Console.WriteLine("\nEnd...!!!");
         }
     }
     
